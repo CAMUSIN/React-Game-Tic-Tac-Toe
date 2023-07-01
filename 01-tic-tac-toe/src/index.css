@@ -126,6 +126,8 @@ body {
   border-radius: 5px;
   display: grid;
   place-items: center;
+  place-content: center;
+  vertical-align: middle;
   cursor: pointer;
   font-size: 48px;
 }
