@@ -7,9 +7,15 @@ import { checkWinner, checkEndGame } from "./logic/board.js";
 import { Winner } from "./components/Winner.jsx";
 
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null));
+  const [board, setBoard] = useState(() =>{
+    const savedBoard = localStorage.getItem("board");
+    return savedBoard ? JSON.parse(savedBoard) : Array(9).fill(null);
+  });
 
-  const [turn, setTurn] = useState(TURNS.X);
+  const [turn, setTurn] = useState(() =>{
+    const savedTurn = localStorage.getItem("turn");
+    return savedTurn ? JSON.parse(savedTurn) : TURNS.X;
+  });
 
   const [winner, setWinner] = useState(null);
 
@@ -26,6 +32,10 @@ function App() {
     const newTurn = turn === TURNS.X ? TURNS.O : TURNS.X;
     setTurn(newTurn);
 
+    //Guardar partida en localstorage
+    localStorage.setItem("board", JSON.stringify(newBoard));
+    localStorage.setItem("turn", JSON.stringify(newTurn));
+
     //comprueba ganador
     const newWinner = checkWinner(newBoard);
     if (newWinner) {
@@ -40,6 +50,9 @@ function App() {
     setBoard(Array(9).fill(null));
     setTurn(TURNS.X);
     setWinner(null);
+
+    localStorage.removeItem("board");
+    localStorage.removeItem("turn");
   };
 
   return (
@@ -56,8 +69,8 @@ function App() {
         })}
       </section>
       <section className="turn">
-        <Square isSelected={turn === TURNS.X}>×</Square>
-        <Square isSelected={turn === TURNS.O}>o</Square>
+        <Square isSelected={turn === TURNS.X}>❌</Square>
+        <Square isSelected={turn === TURNS.O}>⭕</Square>
       </section>
       <Winner winner={winner} handleReset={handleReset}></Winner>
     </main>
